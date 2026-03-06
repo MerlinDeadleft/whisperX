@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from diarizen.pipelines.inference import DiariZenPipeline
 from pyannote.audio import Pipeline
 from typing import Optional, Union, List, Tuple
 import torch
@@ -98,9 +99,14 @@ class DiarizationPipeline:
     ):
         if isinstance(device, str):
             device = torch.device(device)
-        model_config = model_name or "pyannote/speaker-diarization-community-1"
-        logger.info(f"Loading diarization model: {model_config}")
-        self.model = Pipeline.from_pretrained(model_config, token=token, cache_dir=cache_dir).to(device)
+
+        if model_name == "BUT-FIT/diarizen-wavlm-large-s80-md-v2":
+            logger.info(f"Loading diarization model: {model_name}")
+            self.model = DiariZenPipeline.from_pretrained("BUT-FIT/diarizen-wavlm-large-s80-md-v2", cache_dir=cache_dir)
+        else:
+            model_config = model_name or "pyannote/speaker-diarization-community-1"
+            logger.info(f"Loading diarization model: {model_config}")
+            self.model = Pipeline.from_pretrained(model_config, token=token, cache_dir=cache_dir).to(device)
 
     def __call__(
         self,

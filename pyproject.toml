@@ -5,7 +5,7 @@ name = "whisperx"
 version = "3.8.1"
 description = "Time-Accurate Automatic Speech Recognition using Whisper."
 readme = "README.md"
-requires-python = ">=3.10, <3.14"
+requires-python = ">=3.11, <3.14"
 license = { text = "BSD-2-Clause" }
 
 dependencies = [
@@ -20,9 +20,12 @@ dependencies = [
     "torch~=2.10.0",
     "torchaudio~=2.10.0",
     "transformers>=4.48.0",
-    "triton>=3.3.0; sys_platform == 'linux' and platform_machine == 'x86_64'" # only install triton on x86_64 Linux
+    "triton>=3.3.0; sys_platform == 'linux' and platform_machine == 'x86_64'", # only install triton on x86_64 Linux
+    "pandas-stubs~=2.2.3",
+    "DiariZen @ git+https://github.com/MerlinDeadleft/DiariZen.git@main",
+    "onnxruntime; (platform_machine != 'x86_64' or platform_machine != 'AMD64') or sys_platform == 'darwin'",
+    "onnxruntime-gpu; (platform_machine == 'x86_64' or platform_machine == 'AMD64') and sys_platform != 'darwin'"
 ]
-
 
 [project.scripts]
 whisperx = "whisperx.__main__:cli"
@@ -41,6 +44,9 @@ include = ["whisperx*"]
 [tool.uv]
 override-dependencies = [
     "torchcodec>=0.6.0; (sys_platform == 'linux' and platform_machine == 'x86_64') or sys_platform == 'darwin' or sys_platform == 'win32'",
+]
+exclude-dependencies = [
+    "onnxruntime"
 ]
 
 [tool.uv.sources]

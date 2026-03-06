@@ -6,6 +6,8 @@ import warnings
 import numpy as np
 import torch
 
+from datetime import datetime
+
 from whisperx.alignment import align, load_align_model
 from whisperx.asr import load_model
 from whisperx.audio import load_audio
@@ -25,6 +27,7 @@ def transcribe_task(args: dict, parser: argparse.ArgumentParser):
         parser: argparse.ArgumentParser object.
     """
     # fmt: off
+    start_time = datetime.now()
 
     model_name: str = args.pop("model")
     batch_size: int = args.pop("batch_size")
@@ -236,3 +239,6 @@ def transcribe_task(args: dict, parser: argparse.ArgumentParser):
     for result, audio_path in results:
         result["language"] = align_language
         writer(result, audio_path, writer_args)
+
+    end_time = datetime.now()
+    logger.info(f"WhisperX is done! Duration: {end_time-start_time}")
